@@ -1,0 +1,151 @@
+@baseUrl = http://localhost:3000/api/v1
+# Variables to store tokens after login
+@adminToken = {{loginAdmin.response.body.data.accessToken}}
+@customerToken = {{loginCustomer.response.body.data.accessToken}}
+
+# ==========================================
+# 1. AUTHENTICATION & USERS
+# ==========================================
+
+### register as admin
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+"firstName": "Amr",
+"lastName": "Khaled",
+"email": "amr@example.com",
+"phone": "01012345678",
+"password": "Admin123",
+"confirmPassword": "Admin123"
+}
+
+
+### register as customer
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "customer@store.com",
+  "password": "Customer@123456"
+}
+
+### Login as Admin
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "amr@example.com",
+  "password": "Admin123"
+}
+
+### Login as Customer
+# @name loginCustomer
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "customer@test.com",
+  "password": "Customer@123456"
+}
+
+### Get My Profile (Customer)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{customerToken}}
+
+### Get Customer Addresses
+GET {{baseUrl}}/me/addresses
+Authorization: Bearer {{customerToken}}
+
+
+# ==========================================
+# 2. PRODUCTS & CATEGORIES (Public)
+# ==========================================
+
+### Get Category Tree
+GET {{baseUrl}}/categories
+
+### List Products (with pagination and sorting)
+GET {{baseUrl}}/products?page=1&per_page=10&sort=newest
+
+### Search Products by query
+GET {{baseUrl}}/products?q=iPhone
+
+### Get Product Details by Slug
+GET {{baseUrl}}/products/iphone-15-pro-max
+
+
+# ==========================================
+# 3. CART & CHECKOUT (Customer)
+# ==========================================
+
+### Get Cart
+GET {{baseUrl}}/cart
+Authorization: Bearer {{customerToken}}
+
+### Add Product to Cart
+# Note: Replace productId with a valid product ID from the products list above
+@productId = 665... (replace me)
+POST {{baseUrl}}/cart/items
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "productId": "{{productId}}",
+  "quantity": 1
+}
+
+### Preview Cart with Discounts
+POST {{baseUrl}}/cart/preview
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{}
+
+
+# ==========================================
+# 4. ORDERS (Customer & Admin)
+# ==========================================
+
+### Get My Orders (Customer)
+GET {{baseUrl}}/orders
+Authorization: Bearer {{customerToken}}
+
+### Get All Orders (Admin)
+GET {{baseUrl}}/orders/admin/all
+Authorization: Bearer {{adminToken}}
+
+
+# ==========================================
+# 5. ADMIN DASHBOARD & REPORTS
+# ==========================================
+
+### Get Dashboard Summary
+GET {{baseUrl}}/admin/dashboard
+Authorization: Bearer {{adminToken}}
+
+### Get Revenue Report
+GET {{baseUrl}}/admin/reports/revenue?period=daily
+Authorization: Bearer {{adminToken}}
+
+### Get Top Products
+GET {{baseUrl}}/admin/reports/top-products
+Authorization: Bearer {{adminToken}}
+
+
+# ==========================================
+# 6. INVENTORY & WAREHOUSE (Admin)
+# ==========================================
+
+### Get All Warehouses
+GET {{baseUrl}}/inventory/warehouses
+Authorization: Bearer {{adminToken}}
+
+### Check Low Stock Alerts
+GET {{baseUrl}}/inventory/low-stock
+Authorization: Bearer {{adminToken}}
+
+### List Inventory
+GET {{baseUrl}}/inventory
+Authorization: Bearer {{adminToken}}
