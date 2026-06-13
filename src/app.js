@@ -19,14 +19,33 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// ─── Trust Proxy (Vercel / reverse proxy) ────────────
+app.set('trust proxy', 1);
+
 // ─── Security Headers ────────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
 // ─── CORS ────────────────────────────────────────────
+const allowedOrigins = config.cors.origin
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 app.use(cors({
   origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+
+    if (config.isProduction) {
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    }
+
+    // In development, allow all origins
     callback(null, true);
   },
   credentials: true,

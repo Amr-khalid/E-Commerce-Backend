@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 import authRoutes from '../modules/auth/auth.routes.js';
 import productRoutes from '../modules/products/products.routes.js';
 import categoryRoutes from '../modules/categories/categories.routes.js';
@@ -18,12 +19,25 @@ import ApiResponse from '../utils/ApiResponse.js';
 const router = Router();
 
 // Health check
+const DB_STATES = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+
 router.get('/health', (req, res) => {
-  ApiResponse.success(res, {
+  const dbState = mongoose.connection.readyState;
+  const isHealthy = dbState === 1;
+
+  const statusCode = isHealthy ? 200 : 503;
+
+  res.status(statusCode).json({
+    success: isHealthy,
     data: {
-      status: 'healthy',
+      status: isHealthy ? 'healthy' : 'degraded',
       timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
+      uptime: Math.floor(process.uptime()),
+      database: DB_STATES[dbState] || 'unknown',
+      memory: {
+        rss: `${Math.round(process.memoryUsage().rss / 1024 / 1024)}MB`,
+        heap: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`,
+      },
     },
   });
 });

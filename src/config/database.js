@@ -4,7 +4,12 @@ import logger from './logger.js';
 
 const connectDB = async () => {
   try {
-    console.log("MONGO URI:", config.mongo.uri);
+    // Reuse existing connection in serverless environments
+    if (mongoose.connection.readyState === 1) {
+      logger.debug('Using existing MongoDB connection');
+      return mongoose.connection;
+    }
+
     const conn = await mongoose.connect(config.mongo.uri, {
       maxPoolSize: 10,
       minPoolSize: 2,

@@ -15,7 +15,7 @@ dotenv.config();
 
 const seed = async () => {
   try {
-    await mongoose.connect("mongodb+srv://hello:1234@cluster0.griwwl2.mongodb.net/we");
+    await mongoose.connect(process.env.MONGO_URI);
     logger.info('Connected to MongoDB for seeding');
 
     // ─── 1. Seed Roles ──────────────────────────────

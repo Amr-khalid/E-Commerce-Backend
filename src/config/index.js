@@ -3,6 +3,7 @@ dotenv.config();
 
 const config = {
   env: process.env.NODE_ENV || 'development',
+  isProduction: process.env.NODE_ENV === 'production',
   port: parseInt(process.env.PORT, 10) || 3000,
   apiPrefix: process.env.API_PREFIX || '/api/v1',
 
@@ -67,5 +68,22 @@ const config = {
     file: process.env.LOG_FILE || 'logs/app.log',
   },
 };
+
+// ─── Validate Required Config ─────────────────────────
+const requiredVars = [
+  ['mongo.uri', config.mongo.uri],
+  ['jwt.accessSecret', config.jwt.accessSecret],
+  ['jwt.refreshSecret', config.jwt.refreshSecret],
+];
+
+const missing = requiredVars.filter(([, value]) => !value);
+if (missing.length > 0) {
+  const names = missing.map(([name]) => name).join(', ');
+  console.error(`❌ Missing required environment variables: ${names}`);
+  console.error('   Copy .env.example to .env and fill in the values.');
+  if (config.isProduction) {
+    process.exit(1);
+  }
+}
 
 export default config;
