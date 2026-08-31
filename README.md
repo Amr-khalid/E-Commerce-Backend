@@ -1,4 +1,4 @@
-# 🛒 E-Commerce Backend API
+# E-Commerce Backend API
 
 Professional RESTful E-Commerce Backend built with **Express.js** and **MongoDB**.
 
