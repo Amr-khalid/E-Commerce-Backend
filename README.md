@@ -185,7 +185,7 @@ Copy `.env.example` to `.env` and configure:
 
 ---
 
-## 🚢 Deployment (Vercel)
+##  Deployment (Vercel)
 
 ```bash
 # Install Vercel CLI
