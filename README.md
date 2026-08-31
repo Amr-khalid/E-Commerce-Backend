@@ -10,7 +10,7 @@ Professional RESTful E-Commerce Backend built with **Express.js** and **MongoDB*
 
 | Layer | Technology |
 |-------|-----------|
-| Runtime | Node.js 18+ |
+| Runtime | Node.js 18 |
 | Framework | Express.js 4 |
 | Database | MongoDB (Mongoose 8) |
 | Auth | JWT (Access + Refresh tokens) |
