@@ -6,7 +6,7 @@ Professional RESTful E-Commerce Backend built with **Express.js** and **MongoDB*
 
 ---
 
-## ⚡ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
